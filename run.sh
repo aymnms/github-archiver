@@ -69,7 +69,7 @@ setup() {
     echo ""
 
     echo -e "  ${DIM}Token requis — permissions :${NC}"
-    echo -e "  ${DIM}  Classic token  → scope 'repo'${NC}"
+    echo -e "  ${DIM}  Classic token  → scope 'repo' (+ 'delete_repo' si tu utilises --delete)${NC}"
     echo -e "  ${DIM}  Fine-grained   → Contents: read, Metadata: read, Administration: write${NC}"
     echo -e "  ${DIM}  (+ Members: read si destination = organisation)${NC}"
     echo ""
