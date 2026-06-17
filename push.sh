@@ -23,6 +23,9 @@ else
     CREATE_ENDPOINT="${API}/user/repos"
 fi
 
+SUCCEEDED=()
+FAILED=()
+
 for project_name in "$@"
 do
     echo -e "${BLUE}push.sh > start $project_name${NC}"
@@ -100,10 +103,22 @@ do
         fi
     ); then
         echo -e "${GREEN}push.sh > $project_name pushed to ${DEST_ORG}${NC}"
+        SUCCEEDED+=("$project_name")
     else
         echo -e "${RED}push.sh > $project_name failed, skipping${NC}"
+        FAILED+=("$project_name")
     fi
 
     rm -rf "${project_name}.git" 2>/dev/null || true
     echo -e "${BLUE}push.sh > $project_name local folder removed${NC}"
 done
+
+# ── Summary ──────────────────────────────────────────────────────────────────
+
+total=$(( ${#SUCCEEDED[@]} + ${#FAILED[@]} ))
+echo ""
+echo -e "${BOLD}Summary — ${total} repo(s) processed${NC}"
+echo -e "  ${GREEN}✔ ${#SUCCEEDED[@]} succeeded${NC}"
+for r in "${SUCCEEDED[@]}"; do echo -e "    ${DIM}${r}${NC}"; done
+echo -e "  ${RED}✘ ${#FAILED[@]} failed${NC}"
+for r in "${FAILED[@]}"; do echo -e "    ${DIM}${r}${NC}"; done
