@@ -5,6 +5,7 @@ set -euo pipefail
 BLUE='\033[0;34m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m'
@@ -29,9 +30,9 @@ fi
 
 usage() {
     echo -e "${BOLD}Usage:${NC}"
-    echo -e "  ${GREEN}./run.sh${NC} ${DIM}[--delete] <repo1> [repo2...]${NC}"
-    echo -e "  ${GREEN}./run.sh --setup${NC}"
-    echo -e "  ${GREEN}./run.sh --setup${NC} ${DIM}[--delete] <repo1> [...]${NC}"
+    echo -e "  ${GREEN}github-archiver${NC} ${DIM}[--delete] <repo1> [repo2...]${NC}"
+    echo -e "  ${GREEN}github-archiver --setup${NC}"
+    echo -e "  ${GREEN}github-archiver --setup${NC} ${DIM}[--delete] <repo1> [...]${NC}"
     echo ""
     echo -e "  ${DIM}--delete   Delete the source repo after a successful mirror${NC}"
     echo -e "  ${DIM}           Requires 'delete_repo' scope (classic) or Administration: write (fine-grained)${NC}"
