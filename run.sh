@@ -65,10 +65,16 @@ setup() {
     echo -e "${DIM}Les paramètres seront sauvegardés dans ${ENV_FILE}.${NC}"
     echo ""
 
+    echo -e "  ${DIM}Token requis — permissions :${NC}"
+    echo -e "  ${DIM}  Classic token  → scope 'repo'${NC}"
+    echo -e "  ${DIM}  Fine-grained   → Contents: read, Metadata: read, Administration: write${NC}"
+    echo -e "  ${DIM}  (+ Members: read si destination = organisation)${NC}"
+    echo ""
+
     while true; do
         gh_token=$(prompt \
             "GitHub Personal Access Token" \
-            "scope requis : repo" \
+            "" \
             "true")
 
         echo -e "  ${DIM}Validation du token...${NC}"

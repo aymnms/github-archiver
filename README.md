@@ -11,7 +11,7 @@ No dependencies beyond `git`, `curl`, and `ssh`.
 - `git`
 - `curl`
 - `ssh` with a key configured for GitHub
-- A GitHub Personal Access Token — scope: **`repo`**
+- A GitHub Personal Access Token — see required permissions below
 
 ---
 
@@ -31,6 +31,19 @@ Prompts for:
 | Visibility | `public`, `private`, or `mirror` (copies source visibility) |
 
 Saved to `.env` (git-ignored). Token is validated against the API before saving.
+
+### Token permissions
+
+**Classic token (`ghp_...`)** — single scope required:
+- `repo` — full control of repositories (clone, create, update)
+
+**Fine-grained token (`github_pat_...`)** — repository permissions:
+- `Contents` → Read
+- `Metadata` → Read (included by default)
+- `Administration` → Write (required to create repositories)
+
+> **Archiving to an organization?**  
+> Your account must be a member of that organization with permission to create repositories. For fine-grained tokens, also grant **Organization permissions → Members → Read**.
 
 ---
 
