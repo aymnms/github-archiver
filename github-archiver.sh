@@ -10,6 +10,8 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m'
 
+VERSION="1.0.4"
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/github-archiver"
 ENV_PATH="$CONFIG_DIR/.env"
@@ -33,9 +35,11 @@ usage() {
     echo -e "  ${GREEN}github-archiver${NC} ${DIM}[--delete] <repo1> [repo2...]${NC}"
     echo -e "  ${GREEN}github-archiver --setup${NC}"
     echo -e "  ${GREEN}github-archiver --setup${NC} ${DIM}[--delete] <repo1> [...]${NC}"
+    echo -e "  ${GREEN}github-archiver --version${NC}"
     echo ""
-    echo -e "  ${DIM}--delete  Delete the source repo after a successful mirror${NC}"
-    echo -e "  ${DIM}          Requires 'delete_repo' scope (classic) or Administration: write (fine-grained)${NC}"
+    echo -e "  ${DIM}--delete   Delete the source repo after a successful mirror${NC}"
+    echo -e "  ${DIM}           Requires 'delete_repo' scope (classic) or Administration: write (fine-grained)${NC}"
+    echo -e "  ${DIM}--version  Print the current version${NC}"
     echo ""
 }
 
@@ -131,9 +135,10 @@ PROJECTS=()
 
 for arg in "$@"; do
     case "$arg" in
-        --setup)  FORCE_SETUP=true ;;
-        --delete) DELETE_SOURCE=true ;;
-        *)        PROJECTS+=("$arg") ;;
+        --setup)   FORCE_SETUP=true ;;
+        --delete)  DELETE_SOURCE=true ;;
+        --version) echo "github-archiver $VERSION"; exit 0 ;;
+        *)         PROJECTS+=("$arg") ;;
     esac
 done
 
