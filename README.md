@@ -34,8 +34,9 @@ Saved to `.env` (git-ignored). Token is validated against the API before saving.
 
 ### Token permissions
 
-**Classic token (`ghp_...`)** — single scope required:
+**Classic token (`ghp_...`)** — scopes required:
 - `repo` — full control of repositories (clone, create, update)
+- `delete_repo` — only if using `--delete`
 
 **Fine-grained token (`github_pat_...`)** — repository permissions:
 - `Contents` → Read
@@ -52,6 +53,9 @@ Saved to `.env` (git-ignored). Token is validated against the API before saving.
 ```bash
 # Archive one or more repos
 ./run.sh <repo1> [repo2] [...]
+
+# Archive then delete the source repos
+./run.sh --delete <repo1> [repo2] [...]
 
 # Reconfigure
 ./run.sh --setup

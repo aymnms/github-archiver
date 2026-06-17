@@ -87,6 +87,13 @@ do
         echo -e "${DARK_GRAY}Pushing all branches and tags...${NC}"
         cd "${project_name}.git"
         git push --mirror "git@github.com:${DEST_ORG}/${project_name}.git"
+
+        if [[ "${DELETE_SOURCE:-false}" == "true" ]]; then
+            echo -e "${DARK_GRAY}Deleting source ${SOURCE_USER}/${project_name}...${NC}"
+            curl -s -X DELETE \
+                -H "Authorization: Bearer ${GH_TOKEN}" \
+                "${API}/repos/${SOURCE_USER}/${project_name}"
+        fi
     ); then
         echo -e "${GREEN}push.sh > $project_name pushed to ${DEST_ORG}${NC}"
     else

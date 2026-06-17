@@ -28,9 +28,12 @@ fi
 
 usage() {
     echo -e "${BOLD}Usage:${NC}"
-    echo -e "  ${GREEN}./run.sh${NC} ${DIM}<project1> [project2...]${NC}   Pusher des projets"
-    echo -e "  ${GREEN}./run.sh --setup${NC}                        Reconfigurer les paramètres"
-    echo -e "  ${GREEN}./run.sh --setup${NC} ${DIM}<project1> [...]${NC}    Reconfigurer puis pusher"
+    echo -e "  ${GREEN}./run.sh${NC} ${DIM}[--delete] <repo1> [repo2...]${NC}"
+    echo -e "  ${GREEN}./run.sh --setup${NC}"
+    echo -e "  ${GREEN}./run.sh --setup${NC} ${DIM}[--delete] <repo1> [...]${NC}"
+    echo ""
+    echo -e "  ${DIM}--delete   Delete the source repo after a successful mirror${NC}"
+    echo -e "  ${DIM}           Requires 'delete_repo' scope (classic) or Administration: write (fine-grained)${NC}"
     echo ""
 }
 
@@ -120,14 +123,15 @@ EOF
 # ── Parse args ───────────────────────────────────────────────────────────────
 
 FORCE_SETUP=false
+DELETE_SOURCE=false
 PROJECTS=()
 
 for arg in "$@"; do
-    if [[ "$arg" == "--setup" ]]; then
-        FORCE_SETUP=true
-    else
-        PROJECTS+=("$arg")
-    fi
+    case "$arg" in
+        --setup)  FORCE_SETUP=true ;;
+        --delete) DELETE_SOURCE=true ;;
+        *)        PROJECTS+=("$arg") ;;
+    esac
 done
 
 if [[ "$FORCE_SETUP" == false && ${#PROJECTS[@]} -eq 0 ]]; then
@@ -151,5 +155,6 @@ if [[ ${#PROJECTS[@]} -gt 0 ]]; then
     source "$ENV_PATH"
     set +o allexport
 
+    export DELETE_SOURCE
     "$SCRIPT_DIR/push.sh" "${PROJECTS[@]}"
 fi
