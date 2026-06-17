@@ -76,6 +76,7 @@ setup() {
     echo -e "  ${DIM}  (+ Members: read if destination is an organization)${NC}"
     echo ""
 
+    github_login=""
     while true; do
         gh_token=$(prompt \
             "GitHub Personal Access Token" \
@@ -83,23 +84,23 @@ setup() {
             "true")
 
         echo -e "  ${DIM}Validating token...${NC}"
-        token_status=$(curl -s -o /dev/null -w "%{http_code}" \
+        user_info=$(curl -s \
             -H "Authorization: Bearer ${gh_token}" \
             "https://api.github.com/user")
+        github_login=$(echo "$user_info" | grep '"login"' | head -1 | sed 's/.*"login": *"\([^"]*\)".*/\1/')
 
-        if [[ "$token_status" == "200" ]]; then
-            echo -e "  ${GREEN}Token valid.${NC}"
+        if [[ -n "$github_login" ]]; then
+            echo -e "  ${GREEN}Token valid. Signed in as ${github_login}.${NC}"
             break
         else
-            echo -e "  ${RED}Invalid or expired token (HTTP ${token_status}). Try again.${NC}"
+            echo -e "  ${RED}Invalid or expired token. Try again.${NC}"
         fi
     done
 
-    default_user=$(git config --global user.name 2>/dev/null || true)
     source_input=$(prompt \
         "Source GitHub username" \
-        "leave empty to use ${default_user:-your local git username}")
-    source_user="${source_input:-$default_user}"
+        "leave empty to use ${github_login}")
+    source_user="${source_input:-$github_login}"
 
     dest_org=$(prompt \
         "Destination GitHub org or user" \
