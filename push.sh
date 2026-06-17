@@ -86,6 +86,10 @@ do
 
         echo -e "${DARK_GRAY}Pushing all branches and tags...${NC}"
         cd "${project_name}.git"
+
+        # Remove GitHub-internal refs (refs/pull/*) — GitHub rejects them on push
+        git for-each-ref --format='delete %(refname)' refs/pull | git update-ref --stdin
+
         git push --mirror "git@github.com:${DEST_ORG}/${project_name}.git"
 
         if [[ "${DELETE_SOURCE:-false}" == "true" ]]; then
