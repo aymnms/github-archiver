@@ -26,7 +26,7 @@ brew uninstall github-archiver
 
 ### Manual
 
-Clone the repo and run `./run.sh` directly.
+Clone the repo and run `./github-archiver.sh` directly.
 
 ---
 
@@ -42,7 +42,7 @@ Clone the repo and run `./run.sh` directly.
 ## Setup
 
 ```bash
-./run.sh --setup
+./github-archiver.sh --setup
 ```
 
 Prompts for:
@@ -76,16 +76,16 @@ Saved to `.env` (git-ignored). Token is validated against the API before saving.
 
 ```bash
 # Archive one or more repos
-./run.sh <repo1> [repo2] [...]
+./github-archiver.sh <repo1> [repo2] [...]
 
 # Archive then delete the source repos
-./run.sh --delete <repo1> [repo2] [...]
+./github-archiver.sh --delete <repo1> [repo2] [...]
 
 # Reconfigure
-./run.sh --setup
+./github-archiver.sh --setup
 
 # Reconfigure then immediately archive
-./run.sh --setup <repo1> [repo2] [...]
+./github-archiver.sh --setup <repo1> [repo2] [...]
 ```
 
 ---
@@ -93,7 +93,7 @@ Saved to `.env` (git-ignored). Token is validated against the API before saving.
 ## How it works
 
 ```
-run.sh
+github-archiver.sh
   ├── checks dependencies (git, curl, ssh)
   ├── loads .env
   └── calls push.sh <repos...>
