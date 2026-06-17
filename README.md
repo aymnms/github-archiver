@@ -6,6 +6,30 @@ No dependencies beyond `git`, `curl`, and `ssh`.
 
 ---
 
+## Installation
+
+### Homebrew (macOS and Linux)
+
+```bash
+brew install aymnms/tap/github-archiver
+```
+
+To update:
+```bash
+brew upgrade github-archiver
+```
+
+To uninstall:
+```bash
+brew uninstall github-archiver
+```
+
+### Manual
+
+Clone the repo and run `./run.sh` directly.
+
+---
+
 ## Prerequisites
 
 - `git`
