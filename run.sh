@@ -9,9 +9,10 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m'
 
-ENV_FILE=".env"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_PATH="$SCRIPT_DIR/$ENV_FILE"
+CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/github-archiver"
+ENV_PATH="$CONFIG_DIR/.env"
+mkdir -p "$CONFIG_DIR"
 
 # ── Dependency check ─────────────────────────────────────────────────────────
 
@@ -65,7 +66,7 @@ prompt() {
 setup() {
     echo ""
     echo -e "${BOLD}${BLUE}Configuration${NC}"
-    echo -e "${DIM}Les paramètres seront sauvegardés dans ${ENV_FILE}.${NC}"
+    echo -e "${DIM}Les paramètres seront sauvegardés dans ${ENV_PATH}.${NC}"
     echo ""
 
     echo -e "  ${DIM}Token requis — permissions :${NC}"
