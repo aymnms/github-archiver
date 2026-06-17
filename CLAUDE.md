@@ -6,6 +6,8 @@ Context for AI assistants working on this project.
 
 `github-archiver` is a bash CLI tool that mirrors GitHub repositories to another account or organization. It copies all branches, tags, description, topics, and visibility. Zero dependencies beyond `git`, `curl`, and `ssh`.
 
+Current version: **1.0.5**
+
 ## Repos
 
 - `github.com/aymnms/github-archiver` — this repo (the tool)
@@ -21,7 +23,7 @@ Context for AI assistants working on this project.
 Two scripts:
 
 - `github-archiver.sh` — entry point: dependency check, setup wizard, loads `.env`, calls `push.sh`
-- `push.sh` — core logic: mirror clone, GitHub API calls, push, optional source deletion
+- `push.sh` — core logic: mirror clone, GitHub API calls, push, optional source deletion, run summary
 
 Config stored at `~/.config/github-archiver/.env` (XDG standard).
 
@@ -40,6 +42,15 @@ REPO_VISIBILITY     # public | private | mirror (default: mirror)
 github-archiver --setup                      # first-time configuration
 github-archiver <repo1> [repo2...]           # mirror repos
 github-archiver --delete <repo1> [...]       # mirror then delete source
+github-archiver --version                    # print current version
+```
+
+## Installation
+
+```bash
+brew install aymnms/tap/github-archiver
+brew upgrade github-archiver
+brew uninstall github-archiver
 ```
 
 ## Key design decisions
@@ -51,24 +62,32 @@ github-archiver --delete <repo1> [...]       # mirror then delete source
 - **`tr -d '\n '` before grep on topics** — GitHub API returns pretty-printed JSON; grep is line-by-line and would miss multi-line arrays without this
 - **Org vs user endpoint detection** — `GET /users/:dest` checks `"type"` field to choose between `POST /orgs/:org/repos` and `POST /user/repos`
 - **`~/.config/github-archiver/`** — XDG Base Directory standard, consistent with `gh` CLI; works correctly whether run locally or installed via Homebrew
+- **GitHub login from API** — `GET /user` is called during token validation; `"login"` field is extracted and used as default source username (not `git config user.name` which is a display name, not an identifier)
+- **Run summary** — tracked in parent shell via `SUCCEEDED` / `FAILED` arrays (not inside subshells); printed after the loop
+
+## Open issues
+
+- **#1** `bug: no validation of required fields in setup` — empty `dest_org` or `source_user` saves silently and fails at run time
+- **#2** `bug: REPO_VISIBILITY not validated in setup` — invalid value silently falls through to `mirror` behavior
+- **#3** `feat: add --dry-run flag` — show what would happen without executing write operations
 
 ## Release process
 
-Every release requires updating both `github-archiver` and `homebrew-tap`:
+Every release requires bumping the version, tagging, and updating the Formula:
 
 ```bash
-# 1. Commit and push changes to github-archiver
+# 1. Bump VERSION in github-archiver.sh, commit and push
 git tag vX.Y.Z && git push origin vX.Y.Z
 
 # 2. Create GitHub release via API
 curl -s -X POST -H "Authorization: Bearer $GH_TOKEN" \
   https://api.github.com/repos/aymnms/github-archiver/releases \
-  -d '{"tag_name":"vX.Y.Z","name":"vX.Y.Z","draft":false,"prerelease":false}'
+  -d '{"tag_name":"vX.Y.Z","name":"vX.Y.Z","body":"...","draft":false,"prerelease":false}'
 
 # 3. Compute SHA256 of the tarball
 curl -sL https://github.com/aymnms/github-archiver/archive/refs/tags/vX.Y.Z.tar.gz | shasum -a 256
 
-# 4. Update homebrew-tap/Formula/github-archiver.rb with new url + sha256
+# 4. Update url + sha256 in homebrew-tap/Formula/github-archiver.rb
 # 5. Commit and push homebrew-tap
 # 6. Sync github-archiver.sh → run.sh in aymnms-archives/.github
 ```
@@ -76,5 +95,5 @@ curl -sL https://github.com/aymnms/github-archiver/archive/refs/tags/vX.Y.Z.tar.
 ## What to keep in sync
 
 After any change to `github-archiver.sh` or `push.sh`, sync to `aymnms-archives/.github`:
-- `github-archiver.sh` → copied as `run.sh` in `.github`
-- `push.sh` → copied as `push.sh` in `.github`
+- `github-archiver.sh` → copied as `run.sh`
+- `push.sh` → copied as `push.sh`
